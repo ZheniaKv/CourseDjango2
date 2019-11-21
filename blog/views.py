@@ -8,6 +8,7 @@ from models import*
 
 
 class HomeView(View):
+
     """вывод всех постов"""
     def get(self,request):
         category_list = Category.objects.all()
@@ -16,6 +17,7 @@ class HomeView(View):
 
 
 class CategoryView(View):
+
     """Вывод статей категории"""
     def get(self, request, slug):
         category = Category.objects.get(slug=slug)

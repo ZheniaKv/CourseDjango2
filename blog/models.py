@@ -2,6 +2,7 @@ from django.db import models
 
 
 class Category(models.Model):
+
     """Модель категории"""
     name = models.CharField("Имя", max_length=100)
     slug = models.SlugField("url", max_length=100, unique=True)
@@ -28,6 +29,7 @@ class Tag(models.Model):
 
 
 class Post(models.Model):
+
     """Модель поста"""
     title = models.CharField("заголовок", max_length=250)
     mini_text = models.TextField("описание")
@@ -44,6 +46,7 @@ class Post(models.Model):
 
 
 class Comment(models.Model):
+
     """Модель поста"""
     text = models.TextField("текст")
     create_date = models.DateTimeField("дата создания", auto_now=True)
