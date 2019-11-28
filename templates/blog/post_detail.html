@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+ {% for category in categories %}
+    <p><a href="{% url 'category' category.slug %}">{{ category.name }}</a></p>
+{% endfor %}
+<hr>
+    <h2>{{ post.title }}</h2>
+    <p>{{ post.mini_text }}</p>
+    <p>{{ post.text }}</p>
+    <small>{{ post.published_date }}</small><br>
+    <small>категория: {{post.category.name}}</small><br>
+    <small>просмотров: {{ post.viewed }}</small><br>
+    <small>комментариев: {{ post.comment_set.count}}</small><br>
+    <small>теги: <a href="">{{post.tag.all|join:", "}}</a></small><br>
+
+
+</body>
+</html>
