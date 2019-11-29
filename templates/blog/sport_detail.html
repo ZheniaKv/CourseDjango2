@@ -2,15 +2,15 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title></title>
+    <title>Title</title>
 </head>
 <body>
 
-<p>post_detail</p>
+<h1>Sport_detail.html</h1>
 
  {% for category in categories %}
     <p><a href="{% url 'category' category.slug %}">{{ category.name }}</a></p>
- {% endfor %}
+{% endfor %}
 <hr>
     <h2>{{ post.title }}</h2>
     <p>{{ post.mini_text }}</p>
@@ -18,8 +18,9 @@
     <small>{{ post.published_date }}</small><br>
     <small>категория: {{post.category.name}}</small><br>
     <small>просмотров: {{ post.viewed }}</small><br>
-
-
+    {% for tag in post.tags.all %}
+    <small><a href="{% url 'find_by_tag' tag.slug %}">{{ tag.name }}</a></small>
+     {% endfor %}
     <hr>
 
      <h4>Комментарии</h4>

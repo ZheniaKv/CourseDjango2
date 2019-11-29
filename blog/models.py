@@ -62,7 +62,7 @@ class Post(models.Model):
     text = models.TextField("текст")
     create_date = models.DateTimeField("дата создания", auto_now=True)
     slug = models.SlugField("url", max_length=100, unique=True)
-    tag = models.ManyToManyField(Tag, verbose_name="Тег", blank=True)
+    tags = models.ManyToManyField(Tag, verbose_name="Тег", blank=True, related_name="tag")
 
     edit_date = models.DateTimeField(
         "дата редактирования",
@@ -79,7 +79,7 @@ class Post(models.Model):
     image = models.ImageField("главная фотография", upload_to="post/", null=True, blank=True)
     category = models.ForeignKey(Category, verbose_name="Категория",
                                  on_delete=models.CASCADE, null=True)
-    template = models.CharField("шаблон", max_length=500, default="blog/post_detail.html")
+    template = models.CharField("шаблон", max_length=500, default="blog/post_list.html")
     published = models.BooleanField("опубликовать?", default=True)
     viewed = models.PositiveIntegerField("просмотрено", default=0)
     status = models.BooleanField("для зарегистрированных", default=False)
@@ -96,6 +96,12 @@ class Post(models.Model):
     def get_absolute_url(self):
         return reverse('detail_post', kwargs={'category': self.category.slug, 'slug': self.slug})
 
+    def get_comments_count(self):
+        return self.comments.count()
+
+    def get_tags(self):
+        return self.tag.all()
+
 
 
 
@@ -106,7 +112,10 @@ class Comment(models.Model):
         verbose_name="Автор",
         on_delete=models.CASCADE,
     )
-    post = models.ForeignKey(Post, verbose_name="статья", on_delete=models.CASCADE)
+    post = models.ForeignKey(Post,
+                             verbose_name="статья",
+                             on_delete=models.CASCADE,
+                             related_name= "comments")
     text = models.TextField("комментарий")
     create_date = models.DateTimeField("дата создания", auto_now=True)
     moderation = models.BooleanField(default=True)

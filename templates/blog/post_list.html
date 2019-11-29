@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+
+{% for post in posts_by_tag %}
+<h2><a href="{{ post.get_absolute_url }}">{{ post.title}}</a></h2>
+
+{% endfor %}
+
+{% for category in categories %}
+    <p><a href="{% url 'category' category.slug %}">{{ category.name }}</a></p>
+{% endfor %}
+<hr>
+{% for post in post_list %}
+    <h2><a href="{{ post.get_absolute_url }}">{{ post.title }}</a></h2>
+    <p>{{ post.mini_text }}</p>
+    <small>{{ post.published_date }}</small>
+     <br>
+     <small>просмотров: {{post.viewed}}</small><br>
+     <small>комментариев: {{post.get_comments_count}}</small>
+     {% for tag in post.tags.all %}<br>
+        <small><a href="{% url 'find_by_tag' tag.slug %}">{{ tag.name }}</a></small>
+
+    {% endfor %}
+{% endfor %}
+
+
+
+
+
+
+
+</body>
+</html>
