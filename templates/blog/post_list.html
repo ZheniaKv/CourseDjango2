@@ -7,11 +7,6 @@
 <body>
 
 
-{% for post in posts_by_tag %}
-<h2><a href="{{ post.get_absolute_url }}">{{ post.title}}</a></h2>
-
-{% endfor %}
-
 {% for category in categories %}
     <p><a href="{% url 'category' category.slug %}">{{ category.name }}</a></p>
 {% endfor %}

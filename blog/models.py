@@ -19,7 +19,7 @@ class Category(MPTTModel):
         blank=True,
         related_name='children'
     )
-    template = models.CharField("шаблон", max_length=500, default="blog/single_post.html")
+    template = models.CharField("шаблон", max_length=500, default="blog/post_list.html")
     published = models.BooleanField("отображать?", default=True)
     paginated = models.PositiveIntegerField("количество новостей на странице", default=5)
     sort = models.PositiveIntegerField('порядок', default=0)
@@ -101,6 +101,9 @@ class Post(models.Model):
 
     def get_tags(self):
         return self.tag.all()
+
+    def get_category_template(self):
+        return self.category.template
 
 
 
