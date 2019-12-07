@@ -1,42 +1,64 @@
 from datetime import datetime
 from django.http import HttpResponse
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.views import View
 from django.views.generic import DetailView
+from .forms import CommentForm
 
-from .models import Category, Post, Tag
+from .models import Category, Post, Tag, Comment
 
 from models import*
 
-class HomeView(View):
-    """вывод всех постов"""
-    def get(self,request):
-        category_list = Category.objects.all()
-        posts = Post.objects.filter(published_date__lte=datetime.now(), published=True)
-        return render(request,'blog/post_list.html', {'categories': category_list, 'post_list': posts})
-
-
-class CategoryView(View):
+class PostListView(View):
     """вывод категорий"""
-    def get(self, request, slug):
-        posts = Post.objects.filter(category__slug = slug,category__published = True, published = True )
-        return render(request, 'blog/post_list.html',{'post_list':posts})
 
+    def get_queryset(self):
+        return Post.objects.filter(published_date__lte=datetime.now(), published=True)
 
+    def get(self, request, category_slug=None,slug=None):
 
-class TagView(View):
-    """вывод статей по тегу"""
-    def get(self, request, slug):
-        current_tag = Tag.objects.get(slug=slug)
-        pk = current_tag.id
-        posts = Post.objects.filter(tags__id=pk)
+        category_list = Category.objects.filter(published=True)
 
-        return render(request, 'blog/post_list.html', {'post_list': posts})
+        if category_slug is not None:
+
+            posts = self.get_queryset().filter(category__slug = category_slug,category__published = True, published = True )
+
+        elif slug is not None:
+
+            posts = self.get_queryset().filter(tags__slug=slug, tags__published=True)
+
+        else:
+            posts = self.get_queryset()
+
+        if posts.exists():
+            template = posts.first().get_category_template()
+        else:
+            template = 'blog/post_list.html'
+        return render(request, template,{'post_list':posts,'categories': category_list})
+
 
 
 class PostDetailView(View):
     """Вывод полной статьи"""
-    def get(self,request, category, slug):
-        category_list = Category.objects.all()
-        post = Post.objects.get(slug=slug)
-        return render(request, post.template, {'post': post, 'categories':category_list})
+    def get(self,request, **kwargs):
+
+        category_list = Category.objects.filter(published=True)
+        post = get_object_or_404(Post,slug= kwargs.get("slug"))
+
+        form = CommentForm()
+
+        return render(request, post.template, {'post': post, 'categories':category_list,'form':form})
+
+    def post(self,request,**kwargs):
+        print(request.POST)
+        print('**kwargs', kwargs)
+
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            form = form.save(commit=False)
+            form.post = Post.objects.get(slug=kwargs.get("slug"))
+            print(': form.post_id: ',form.post_id)
+            form.author = request.user
+            form.save()
+        return redirect(request.path)
+

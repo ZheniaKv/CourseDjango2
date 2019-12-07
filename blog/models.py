@@ -32,6 +32,9 @@ class Category(MPTTModel):
         verbose_name = "Категория"
         verbose_name_plural = "Категории"
 
+    def get_absolute_url(self):
+        return reverse('category', kwargs={'category_slug': self.slug})
+
 
 class Tag(models.Model):
     """Модель тега"""

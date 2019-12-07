@@ -40,6 +40,8 @@ INSTALLED_APPS = [
 
     'mptt',
     'blog',
+    'menu',
+    'pages',
 
 ]
 
